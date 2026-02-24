@@ -85,7 +85,8 @@ function initFormValidation() {
 
         
         if (!errorMessage && date) {
-            const selectedDate = new Date(date);
+            const parts = date.split('-');
+            const selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             if (selectedDate < today) {
