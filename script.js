@@ -83,6 +83,21 @@ function initFormValidation() {
             }
         }
 
+        
+        if (!errorMessage && date) {
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                errorMessage = 'Дата проведення не може бути в минулому. Оберіть майбутню дату.';
+            }
+        }
+
+        
+        if (!errorMessage && description.length > 300) {
+            errorMessage = `Опис занадто довгий (${description.length}/300 символів). Скоротіть текст.`;
+        }
+
         const resultBox = document.getElementById('form-result');
 
         if (errorMessage) {
@@ -153,8 +168,10 @@ function filterProjects(status) {
         i++;
     }
 
+    
     applyCardStyles();
 
+    
     const cards = document.querySelectorAll('.card');
     for (let i = 0; i < cards.length; i++) {
         cards[i].addEventListener('mouseover', function () {
@@ -252,6 +269,7 @@ function displayMyInitiatives() {
         i++;
     }
 
+    
     applyCardStyles();
 }
 
@@ -285,9 +303,38 @@ window.addEventListener('DOMContentLoaded', () => {
         displayMyInitiatives();
     }
 
+    
     addNavHoverEffects();
 
+    
     initToggleSection();
 
+    
     initFormValidation();
+
+    
+    const dateInput = document.getElementById('date');
+    if (dateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    }
+
+    
+    const descriptionInput = document.getElementById('description');
+    if (descriptionInput) {
+        const counter = document.createElement('div');
+        counter.className = 'char-counter';
+        counter.textContent = '0 / 300';
+        descriptionInput.parentNode.appendChild(counter);
+
+        descriptionInput.addEventListener('input', function () {
+            const len = this.value.length;
+            counter.textContent = `${len} / 300`;
+            if (len > 300) {
+                counter.classList.add('char-counter--over');
+            } else {
+                counter.classList.remove('char-counter--over');
+            }
+        });
+    }
 });
