@@ -100,18 +100,21 @@ function initFormValidation() {
 
         const resultBox = document.getElementById('form-result');
 
+        function truncate(str, max) {
+            return str.length > max ? str.slice(0, max) + '...' : str;
+        }
+
         if (errorMessage) {
-            resultBox.innerHTML = `<div class="form-error">⚠️ ${errorMessage}</div>`;
+            resultBox.innerHTML = '<div class="form-error">⚠️ ' + errorMessage + '</div>';
         } else {
-            resultBox.innerHTML = `
-                <div class="form-success">
-                    <h3>✅ Ініціативу надіслано!</h3>
-                    <p><strong>Назва:</strong> ${title}</p>
-                    <p><strong>Дата:</strong> ${date}</p>
-                    <p><strong>Місце:</strong> ${location}</p>
-                    <p><strong>Опис:</strong> ${description}</p>
-                </div>
-            `;
+            resultBox.innerHTML =
+                '<div class="form-success">' +
+                '<h3>✅ Ініціативу надіслано!</h3>' +
+                '<p><strong>Назва:</strong> ' + truncate(title, 60) + '</p>' +
+                '<p><strong>Дата:</strong> ' + date + '</p>' +
+                '<p><strong>Місце:</strong> ' + truncate(location, 60) + '</p>' +
+                '<p><strong>Опис:</strong> ' + truncate(description, 150) + '</p>' +
+                '</div>';
             form.reset();
         }
     });
