@@ -13,6 +13,31 @@ function getVolunteersCount() {
     return JSON.parse(localStorage.getItem('volunteersCount')) || {};
 }
 
+function getFavoriteIds() {
+    return JSON.parse(localStorage.getItem('favoriteIds')) || [];
+}
+
+function toggleFavorite(initiativeId) {
+    let favoriteIds = getFavoriteIds();
+    const index = favoriteIds.indexOf(initiativeId);
+    if (index === -1) {
+        favoriteIds.push(initiativeId);
+    } else {
+        favoriteIds.splice(index, 1);
+    }
+    localStorage.setItem('favoriteIds', JSON.stringify(favoriteIds));
+
+    const heartBtn = document.querySelector(`.heart-btn[data-id="${initiativeId}"]`);
+    if (heartBtn) {
+        const isFav = favoriteIds.includes(initiativeId);
+        heartBtn.classList.toggle('favorited', isFav);
+        heartBtn.title = isFav ? 'Видалити з улюблених' : 'Додати до улюблених';
+        heartBtn.innerHTML = isFav ? '❤️' : '🤍';
+        heartBtn.style.transform = 'scale(1.4)';
+        setTimeout(() => { heartBtn.style.transform = 'scale(1)'; }, 200);
+    }
+}
+
 function applyCardStyles() {
     const cards = document.querySelectorAll('.card');
     for (let i = 0; i < cards.length; i++) {
@@ -56,15 +81,6 @@ function initToggleSection() {
     });
 }
 
-// Екранує HTML-спецсимволи, щоб уникнути XSS і проблем з відображенням
-function escapeHtml(str) {
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
 function initFormValidation() {
     const form = document.querySelector('.initiative-form');
     if (!form) return;
@@ -85,53 +101,28 @@ function initFormValidation() {
         ];
 
         let errorMessage = '';
-
         for (let i = 0; i < fields.length; i++) {
             if (fields[i].value === '') {
-                errorMessage = 'Будь ласка, заповніть поле: "' + fields[i].name + '"';
+                errorMessage = `Будь ласка, заповніть поле: "${fields[i].name}"`;
                 break;
             }
         }
 
-        if (!errorMessage && date) {
-            const parts = date.split('-');
-            const selectedDate = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            if (selectedDate < today) {
-                errorMessage = 'Дата проведення не може бути в минулому. Оберіть майбутню дату.';
-            }
-        }
-
-        if (!errorMessage && description.length > 300) {
-            errorMessage = 'Опис занадто довгий (' + description.length + '/300 символів). Скоротіть текст.';
-        }
-
         const resultBox = document.getElementById('form-result');
 
-        function truncate(str, max) {
-            return str.length > max ? str.slice(0, max) + '...' : str;
-        }
-
         if (errorMessage) {
-            resultBox.innerHTML = '<div class="form-error">⚠️ ' + escapeHtml(errorMessage) + '</div>';
+            resultBox.innerHTML = `<div class="form-error">⚠️ ${errorMessage}</div>`;
         } else {
-            // ВИПРАВЛЕННЯ: використовуємо escapeHtml + truncate щоб текст не вилазив за межі
-            resultBox.innerHTML =
-                '<div class="form-success">' +
-                '<h3>✅ Ініціативу надіслано!</h3>' +
-                '<p><strong>Назва:</strong> ' + escapeHtml(truncate(title, 60)) + '</p>' +
-                '<p><strong>Дата:</strong> ' + escapeHtml(date) + '</p>' +
-                '<p><strong>Місце:</strong> ' + escapeHtml(truncate(location, 60)) + '</p>' +
-                '<p><strong>Опис:</strong> ' + escapeHtml(truncate(description, 150)) + '</p>' +
-                '</div>';
+            resultBox.innerHTML = `
+                <div class="form-success">
+                    <h3>✅ Ініціативу надіслано!</h3>
+                    <p><strong>Назва:</strong> ${title}</p>
+                    <p><strong>Дата:</strong> ${date}</p>
+                    <p><strong>Місце:</strong> ${location}</p>
+                    <p><strong>Опис:</strong> ${description}</p>
+                </div>
+            `;
             form.reset();
-            // Скидаємо лічильник символів
-            const counter = document.querySelector('.char-counter');
-            if (counter) {
-                counter.textContent = '0 / 300';
-                counter.classList.remove('char-counter--over');
-            }
         }
     });
 }
@@ -150,6 +141,7 @@ function filterProjects(status) {
 
     const joinedIds = getJoinedIds();
     const volunteersCount = getVolunteersCount();
+    const favoriteIds = getFavoriteIds();
 
     let i = 0;
     while (i < allInitiatives.length) {
@@ -157,6 +149,7 @@ function filterProjects(status) {
 
         if (item.status === status) {
             const isJoined = joinedIds.includes(item.id);
+            const isFav = favoriteIds.includes(item.id);
             const displayCount = volunteersCount[item.id] !== undefined
                 ? volunteersCount[item.id]
                 : item.volunteers;
@@ -174,7 +167,10 @@ function filterProjects(status) {
             card.className = 'card';
             card.innerHTML = `
                 <div class="card-content">
-                    <h3>${item.title}</h3>
+                    <div class="card-title-row">
+                        <h3>${item.title}</h3>
+                        <button class="heart-btn${isFav ? ' favorited' : ''}" data-id="${item.id}" onclick="toggleFavorite('${item.id}')" title="${isFav ? 'Видалити з улюблених' : 'Додати до улюблених'}">${isFav ? '❤️' : '🤍'}</button>
+                    </div>
                     <p>📅 Дата: ${item.date}</p>
                     <p>👥 Потрібно волонтерів: <span id="${item.id}">${displayCount}</span></p>
                     <p class="card-description">${item.description}</p>
@@ -235,10 +231,85 @@ function joinWithCounter(button, initiativeId) {
     button.style.backgroundColor = "#8f5bab";
 }
 
+// ======= МОЇ ІНІЦІАТИВИ =======
 function displayMyInitiatives() {
     const container = document.getElementById('myList');
     if (!container) return;
 
+    const isFavoritesPage = document.title.includes('Улюблені');
+
+    if (isFavoritesPage) {
+        displayFavorites(container);
+    } else {
+        displayJoinedProjects(container);
+    }
+}
+
+function displayFavorites(container) {
+    const favoriteIds = getFavoriteIds();
+    container.innerHTML = '';
+
+    if (favoriteIds.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <p>Ви ще не додали жодної ініціативи до улюблених.<br>Натисніть 🤍 на картці, щоб додати.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const volunteersCount = getVolunteersCount();
+    const joinedIds = getJoinedIds();
+
+    favoriteIds.forEach((favId) => {
+        const initiative = allInitiatives.find(item => item.id === favId);
+        if (!initiative) return;
+
+        const card = document.createElement('article');
+        card.className = 'card';
+
+        const displayCount = volunteersCount[initiative.id] !== undefined
+            ? volunteersCount[initiative.id]
+            : initiative.volunteers;
+        const isJoined = joinedIds.includes(initiative.id);
+
+        card.innerHTML = `
+            <div class="card-content">
+                <div class="card-title-row">
+                    <h3>${initiative.title}</h3>
+                    <button class="heart-btn favorited" data-id="${initiative.id}" title="Видалити з улюблених">❤️</button>
+                </div>
+                <p>📅 Дата: ${initiative.date}</p>
+                <p>👥 Залишилось місць: ${displayCount}</p>
+                <p class="card-description">${initiative.description}</p>
+                ${isJoined ? '<span class="joined-badge">✅ Ви учасник</span>' : ''}
+            </div>
+        `;
+
+        const heartBtn = card.querySelector('.heart-btn');
+        heartBtn.addEventListener('click', () => removeFavoriteFromPage(initiative.id));
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'cancel-btn';
+        removeBtn.textContent = 'Видалити з улюблених';
+        removeBtn.onclick = () => removeFavoriteFromPage(initiative.id);
+
+        card.appendChild(removeBtn);
+        container.appendChild(card);
+    });
+
+    applyCardStyles();
+}
+
+function removeFavoriteFromPage(initiativeId) {
+    let favoriteIds = getFavoriteIds();
+    favoriteIds = favoriteIds.filter(id => id !== initiativeId);
+    localStorage.setItem('favoriteIds', JSON.stringify(favoriteIds));
+    const container = document.getElementById('myList');
+    if (container) displayFavorites(container);
+}
+
+function displayJoinedProjects(container) {
     const MyProject = JSON.parse(localStorage.getItem('MyProject')) || [];
     container.innerHTML = '';
 
@@ -308,7 +379,7 @@ function removeFromList(index) {
         localStorage.setItem('volunteersCount', JSON.stringify(volunteersCount));
     }
 
-    displayMyInitiatives();
+    displayJoinedProjects(document.getElementById('myList'));
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -322,28 +393,4 @@ window.addEventListener('DOMContentLoaded', () => {
     addNavHoverEffects();
     initToggleSection();
     initFormValidation();
-
-    const dateInput = document.getElementById('date');
-    if (dateInput) {
-        const today = new Date().toISOString().split('T')[0];
-        dateInput.setAttribute('min', today);
-    }
-
-    const descriptionInput = document.getElementById('description');
-    if (descriptionInput) {
-        const counter = document.createElement('div');
-        counter.className = 'char-counter';
-        counter.textContent = '0 / 300';
-        descriptionInput.parentNode.appendChild(counter);
-
-        descriptionInput.addEventListener('input', function () {
-            const len = this.value.length;
-            counter.textContent = `${len} / 300`;
-            if (len > 300) {
-                counter.classList.add('char-counter--over');
-            } else {
-                counter.classList.remove('char-counter--over');
-            }
-        });
-    }
 });
