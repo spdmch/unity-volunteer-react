@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import allInitiatives from '../data/initiatives';
 
-function RegistrationForm({ onJoin }) {
+function RegistrationForm({ onJoin, allInitiatives = [] }) {
   const [searchParams] = useSearchParams();
   const initiativeId = searchParams.get('id');
   const initiative = allInitiatives.find((i) => i.id === initiativeId);

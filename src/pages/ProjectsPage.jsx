@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import allInitiatives from '../data/initiatives';
 import InitiativeCard from '../components/InitiativeCard';
 
 const TYPE_OPTIONS = [
@@ -41,7 +40,7 @@ function FilterPills({ options, value, onChange }) {
   );
 }
 
-function ProjectsPage({ joinedIds, volunteersCount, favoriteIds, onToggleFav }) {
+function ProjectsPage({ allInitiatives = [], joinedIds, volunteersCount, favoriteIds, onToggleFav }) {
   const [statusFilter, setStatusFilter] = useState('active');
   const [typeFilter,   setTypeFilter]   = useState('всі');
   const [placeFilter,  setPlaceFilter]  = useState('всі');
@@ -68,6 +67,21 @@ function ProjectsPage({ joinedIds, volunteersCount, favoriteIds, onToggleFav }) 
 
   const countLabel = (n) => n === 1 ? 'ініціатива' : n < 5 ? 'ініціативи' : 'ініціатив';
 
+  // Лоадер поки дані ще не прийшли з Firestore
+  if (allInitiatives.length === 0) {
+    return (
+      <main>
+        <section className="initiatives-header">
+          <h2>Доступні ініціативи</h2>
+        </section>
+        <div style={{ textAlign: 'center', padding: '60px 24px', color: '#6b7280' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '12px' }}>⏳</div>
+          <p>Завантаження ініціатив...</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main>
       <section className="initiatives-header">
@@ -91,16 +105,17 @@ function ProjectsPage({ joinedIds, volunteersCount, favoriteIds, onToggleFav }) 
             Завершені
           </button>
         </div>
-<div className="advanced-filters">
-  <FilterPills options={TYPE_OPTIONS} value={typeFilter} onChange={setTypeFilter} />
-  <FilterPills options={PLACE_OPTIONS} value={placeFilter} onChange={setPlaceFilter} />
-  <FilterPills options={DATE_OPTIONS} value={dateFilter} onChange={setDateFilter} />
-  {hasActiveFilter && (
-    <button type="button" className="reset-filter-btn" onClick={resetFilters}>
-      ✕ Скинути
-    </button>
-  )}
-</div>
+
+        <div className="advanced-filters">
+          <FilterPills options={TYPE_OPTIONS} value={typeFilter} onChange={setTypeFilter} />
+          <FilterPills options={PLACE_OPTIONS} value={placeFilter} onChange={setPlaceFilter} />
+          <FilterPills options={DATE_OPTIONS} value={dateFilter} onChange={setDateFilter} />
+          {hasActiveFilter && (
+            <button type="button" className="reset-filter-btn" onClick={resetFilters}>
+              ✕ Скинути
+            </button>
+          )}
+        </div>
 
         <p className="results-count">
           Знайдено: <strong>{filtered.length}</strong> {countLabel(filtered.length)}

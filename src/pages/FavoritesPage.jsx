@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
-import allInitiatives from '../data/initiatives';
 
-function FavoritesPage({ favoriteIds, joinedIds, volunteersCount, onToggleFav }) {
+// ↓ Видалено: import allInitiatives from '../data/initiatives'
+// allInitiatives тепер приходить як проп з App.jsx (дані з Firestore)
+
+function FavoritesPage({ allInitiatives = [], favoriteIds, joinedIds, volunteersCount, onToggleFav }) {
   const favs = allInitiatives.filter((i) => favoriteIds.includes(i.id));
 
   const getDisplayCount = (item) => {

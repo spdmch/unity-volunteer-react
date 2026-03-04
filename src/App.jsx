@@ -1,10 +1,9 @@
-// src/App.jsx
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 import { AuthProvider, useAuth } from './Context/AuthContext';
 import { db } from './firebase';
+import { useInitiatives } from './hooks/useInitiatives';
 
 import Header            from './components/Header';
 import Footer            from './components/Footer';
@@ -18,8 +17,7 @@ import FormInitiativePage from './pages/FormInitiativePage';
 import NewsPage           from './pages/NewsPage';
 import LoginPage          from './pages/LoginPage';
 import RegisterPage       from './pages/RegisterPage';
-
-import allInitiatives from './data/initiatives';
+import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
 
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
@@ -28,6 +26,8 @@ function PrivateRoute({ children }) {
 
 function AppRoutes() {
   const { currentUser } = useAuth();
+
+  const { initiatives: allInitiatives, loading: initiativesLoading } = useInitiatives();
 
   const [joinedIds,       setJoinedIds]       = useState([]);
   const [volunteersCount, setVolunteersCount] = useState({});
@@ -42,24 +42,32 @@ function AppRoutes() {
       setDataLoaded(false);
       return;
     }
+
     async function loadUserData() {
-      const ref  = doc(db, 'users', currentUser.uid);
-      const snap = await getDoc(ref);
-      if (snap.exists()) {
-        const data = snap.data();
-        setJoinedIds(data.joinedIds         || []);
-        setFavoriteIds(data.favoriteIds     || []);
-        setVolunteersCount(data.volunteersCount || {});
+      try {
+        const ref  = doc(db, 'users', currentUser.uid);
+        const snap = await getDoc(ref);
+        if (snap.exists()) {
+          const data = snap.data();
+          setJoinedIds(data.joinedIds             || []);
+          setFavoriteIds(data.favoriteIds         || []);
+          setVolunteersCount(data.volunteersCount || {});
+        }
+        setDataLoaded(true);
+      } catch (err) {
+        console.warn('loadUserData error:', err.message);
+        setDataLoaded(true);
       }
-      setDataLoaded(true);
     }
+
     loadUserData();
   }, [currentUser]);
 
   useEffect(() => {
     if (!currentUser || !dataLoaded) return;
     const ref = doc(db, 'users', currentUser.uid);
-    setDoc(ref, { joinedIds, favoriteIds, volunteersCount }, { merge: true });
+    setDoc(ref, { joinedIds, favoriteIds, volunteersCount }, { merge: true })
+      .catch((err) => console.warn('setDoc error:', err.message));
   }, [joinedIds, favoriteIds, volunteersCount, currentUser, dataLoaded]);
 
   const handleJoin = (initiativeId) => {
@@ -93,6 +101,19 @@ function AppRoutes() {
     );
   };
 
+  if (initiativesLoading) {
+    return (
+      <>
+        <Header />
+        <main style={{ textAlign: 'center', padding: '80px 24px', color: '#6b7280' }}>
+          <div style={{ fontSize: '2rem', marginBottom: '12px' }}>⏳</div>
+          <p>Завантаження ініціатив...</p>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -103,6 +124,7 @@ function AppRoutes() {
           path="/projects"
           element={
             <ProjectsPage
+              allInitiatives={allInitiatives}
               joinedIds={joinedIds}
               volunteersCount={volunteersCount}
               favoriteIds={favoriteIds}
@@ -111,12 +133,12 @@ function AppRoutes() {
           }
         />
 
-        {/* Захищені маршрути — без акаунту редірект на /login */}
         <Route
           path="/my-projects"
           element={
             <PrivateRoute>
               <MyProjectsPage
+                allInitiatives={allInitiatives}
                 joinedIds={joinedIds}
                 volunteersCount={volunteersCount}
                 onLeave={handleLeave}
@@ -130,6 +152,7 @@ function AppRoutes() {
           element={
             <PrivateRoute>
               <FavoritesPage
+                allInitiatives={allInitiatives}
                 favoriteIds={favoriteIds}
                 joinedIds={joinedIds}
                 volunteersCount={volunteersCount}
@@ -143,7 +166,7 @@ function AppRoutes() {
           path="/form-registr"
           element={
             <PrivateRoute>
-              <RegistrationForm onJoin={handleJoin} />
+              <RegistrationForm onJoin={handleJoin} allInitiatives={allInitiatives} />
             </PrivateRoute>
           }
         />

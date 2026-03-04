@@ -1,10 +1,8 @@
-// src/firebase.js
+
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// 🔴 ЗАМІНІТЬ ЦІ ЗНАЧЕННЯ НА СВОЇ:
-// Firebase Console → ⚙️ Налаштування проекту → Ваші програми → firebaseConfig
 const firebaseConfig = {
   apiKey:            'AIzaSyDO6M25Gd85lCQKsXEofQLeT5hHdgI98XA',
   authDomain:        'unity-volunteer-eb328.firebaseapp.com',

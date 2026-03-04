@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
-import allInitiatives from '../data/initiatives';
 
-function MyProjectsPage({ joinedIds, volunteersCount, onLeave }) {
+function MyProjectsPage({ allInitiatives = [], joinedIds, volunteersCount, onLeave }) {
   const joined = allInitiatives.filter((i) => joinedIds.includes(i.id));
 
   const getDisplayCount = (item) => {
