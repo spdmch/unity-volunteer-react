@@ -117,6 +117,7 @@ function AppRoutes() {
   return (
     <>
       <Header />
+<BrowserRouter basename="/unity-volunteer-react">
       <Routes>
         <Route path="/" element={<AboutPage />} />
 
@@ -176,6 +177,7 @@ function AppRoutes() {
         <Route path="/login"           element={<LoginPage />} />
         <Route path="/register"        element={<RegisterPage />} />
       </Routes>
+      </BrowserRouter>
       <Footer />
     </>
   );

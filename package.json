@@ -1,6 +1,7 @@
 {
   "name": "unity-volunteer",
   "version": "1.0.0",
+  "homepage": "https://spdmch.github.io/unity-volunteer-react/",
   "private": true,
   "dependencies": {
     "firebase": "^12.10.0",
@@ -13,7 +14,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": {
     "production": [
@@ -26,5 +29,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
