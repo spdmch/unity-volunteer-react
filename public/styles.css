@@ -36,8 +36,6 @@ body {
     color: var(--text-main);
 }
 
-/* ===== HEADER ===== */
-
 header {
     background: rgba(255, 255, 255, 0.88);
     padding: 18px 40px;
@@ -72,7 +70,7 @@ nav ul {
     padding: 0;
     display: flex;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 nav ul li a {
@@ -97,8 +95,6 @@ nav ul li a.active {
     background: linear-gradient(135deg, var(--primary-mid), var(--accent)) !important;
     box-shadow: 0 4px 14px rgba(108, 63, 197, 0.35);
 }
-
-/* ===== HEADER AUTH ===== */
 
 .header-auth {
     margin-top: 0.75rem;
@@ -157,8 +153,6 @@ nav ul li a.active {
     border-color: #5530a8;
 }
 
-/* ===== MAIN ===== */
-
 main {
     flex: 1;
     max-width: 1200px;
@@ -166,8 +160,6 @@ main {
     padding: 0 24px;
     width: 100%;
 }
-
-/* ===== INITIATIVES HEADER ===== */
 
 .initiatives-header {
     display: flex;
@@ -187,8 +179,6 @@ main {
     letter-spacing: -0.01em;
 }
 
-/* ===== СТАТУС ТОГЛ (Актуальні / Завершені) ===== */
-
 .status-toggle {
     display: inline-flex;
     gap: 8px;
@@ -196,7 +186,7 @@ main {
     border: 1.5px solid var(--border);
     border-radius: var(--radius-pill);
     padding: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -255,14 +245,12 @@ main {
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
-/* ===== РОЗШИРЕНІ ФІЛЬТРИ ===== */
-
 .advanced-filters {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 5px;
     max-width: 800px;
-    margin: 0 auto 12px;
+    margin: 0 auto 6px;
     align-items: center;
 }
 
@@ -270,17 +258,17 @@ main {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .filter-pill {
-    padding: 6px 16px;
+    padding: 4px 11px;
     border-radius: var(--radius-pill);
     border: 1.5px solid var(--border);
     background: #ffffff;
     color: var(--text-muted);
     font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.18s ease;
@@ -330,8 +318,6 @@ main {
     margin: 6px 0 0;
 }
 
-/* ===== GRID ===== */
-
 .initiatives-grid {
     display: flex;
     flex-direction: row;
@@ -341,8 +327,6 @@ main {
     gap: 22px;
     margin-top: 30px;
 }
-
-/* ===== CARD ===== */
 
 .card {
     flex: 0 1 320px;
@@ -356,7 +340,7 @@ main {
     justify-content: space-between;
     transition: transform 0.35s cubic-bezier(0.23,1,0.32,1), box-shadow 0.35s ease;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     animation: fadeUp 0.5s cubic-bezier(0.23,1,0.32,1) both;
 }
 
@@ -368,6 +352,7 @@ main {
     background: linear-gradient(90deg, var(--primary-mid), var(--accent-light));
     opacity: 0;
     transition: opacity 0.3s ease;
+    border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .card:hover {
@@ -406,8 +391,6 @@ main {
 
 .card--completed h3 { opacity: 0.6; }
 
-/* ===== CARD META ===== */
-
 .card-title-row {
     display: flex;
     justify-content: space-between;
@@ -421,7 +404,7 @@ main {
 .card-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 4px;
     margin-bottom: 12px;
 }
 
@@ -450,7 +433,16 @@ main {
     border: 1px solid var(--border);
 }
 
-/* ===== КНОПКИ В КАРТЦІ ===== */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;  
+}
+
+.card-footer {
+    margin-top: 12px;
+    flex-shrink: 0;      
+}
 
 .join-btn, .submit-btn {
     background: linear-gradient(135deg, var(--primary-mid), var(--accent));
@@ -469,6 +461,7 @@ main {
     box-shadow: 0 4px 14px rgba(108, 63, 197, 0.3);
     position: relative;
     overflow: hidden;
+    flex-shrink: 0; 
 }
 
 .join-btn::after, .submit-btn::after {
@@ -501,6 +494,7 @@ main {
     width: 100%;
     margin-top: 14px;
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    flex-shrink: 0;
 }
 
 .cancel-btn:hover {
@@ -527,8 +521,6 @@ main {
 }
 
 .heart-btn:hover { transform: scale(1.25); }
-
-/* ===== EMPTY STATE ===== */
 
 .empty-state {
     text-align: center;
@@ -576,8 +568,6 @@ main {
     box-shadow: 0 4px 14px rgba(108, 63, 197, 0.3);
     transform: translateY(-1px);
 }
-
-/* ===== MY INITIATIVES ===== */
 
 .my-initiatives-section {
     max-width: 1200px;
@@ -749,7 +739,7 @@ input:focus, textarea:focus {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 5px;
     font-size: 0.95rem;
     padding: 13px 24px;
 }
@@ -839,8 +829,6 @@ input:focus, textarea:focus {
 
 .form-success__footer a:hover { text-decoration: underline; }
 
-/* ===== AUTH MODAL ===== */
-
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -878,8 +866,6 @@ input:focus, textarea:focus {
 }
 
 .modal-close:hover { background: var(--bg); }
-
-/* ===== AUTH PAGES ===== */
 
 .auth-page {
     min-height: 80vh;
@@ -970,12 +956,13 @@ input:focus, textarea:focus {
 .auth-switch a { color: var(--accent); font-weight: 600; text-decoration: none; }
 .auth-switch a:hover { text-decoration: underline; }
 
-/* ===== ЗІРКОВИЙ РЕЙТИНГ ===== */
+
 
 .star-rating {
     margin-top: 0.9rem;
     padding-top: 0.9rem;
     border-top: 1px solid #ece8f5;
+    flex-shrink: 0; 
 }
 
 .star-avg { font-size: 0.95rem; font-weight: 700; color: #d4890a; margin: 0 0 0.5rem; }
@@ -1004,7 +991,7 @@ input:focus, textarea:focus {
 .star-hint a { color: var(--accent); font-weight: 600; text-decoration: none; }
 .star-hint a:hover { text-decoration: underline; }
 
-/* ===== FOOTER ===== */
+
 
 footer {
     background: linear-gradient(135deg, var(--primary) 0%, #0f0525 100%);
@@ -1056,14 +1043,13 @@ footer::before {
     letter-spacing: 0.02em;
 }
 
-/* ===== АНІМАЦІЇ ===== */
 
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== АДАПТИВ ===== */
+
 
 @media (max-width: 768px) {
     header { padding: 14px 20px; }
@@ -1073,13 +1059,42 @@ footer::before {
     .initiatives-grid {
         flex-direction: column;
         align-items: stretch;
+        padding-bottom: 8px;
     }
 
     .card {
-        width: 100%;
-        max-width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: unset !important;
+        height: auto !important;
+        padding: 20px 20px 28px 20px !important;
+        box-sizing: border-box !important;
+        display: block !important;      
+        overflow: visible !important;
+        align-self: auto !important;
+    }
+
+    
+    .card-title-row {
+        display: flex;
+    }
+
+    .card-meta {
+        display: flex;
+    }
+
+    .card-footer {
+        display: block;
+        margin-top: 12px;
+    }
+
+    .join-btn,
+    .cancel-btn {
+        display: block !important;
+        width: 100% !important;
+        margin-top: 12px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
 
     .footer-container {
@@ -1095,10 +1110,34 @@ footer::before {
 }
 
 @media (max-width: 480px) {
-    .card { padding: 16px; }
+    .card {
+        padding: 16px 16px 28px 16px !important;
+        height: auto !important;
+        min-height: unset !important;
+        overflow: visible !important;
+        display: block !important;
+        align-self: auto !important;
+        width: 100% !important;
+    }
+
     .card h3 { font-size: 0.97rem; }
     .card p { font-size: 0.78rem; line-height: 1.5; }
     .card-place, .card-type { font-size: 0.68rem; padding: 3px 8px; }
-    .join-btn { font-size: 0.82rem; padding: 10px 16px; margin-top: 10px; }
+
+    .card-footer {
+        flex-shrink: 0;
+    }
+
+    .join-btn, .cancel-btn {
+        font-size: 0.82rem;
+        padding: 10px 16px;
+        margin-top: 10px;
+        display: block !important;      
+        visibility: visible !important;
+        flex-shrink: 0;
+    }
+
+    .star { font-size: 1.3rem; }        
+
     .status-btn { padding: 7px 14px; font-size: 0.82rem; }
 }

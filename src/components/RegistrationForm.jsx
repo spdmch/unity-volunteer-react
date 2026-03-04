@@ -8,11 +8,29 @@ function RegistrationForm({ onJoin }) {
   const initiative = allInitiatives.find((i) => i.id === initiativeId);
 
   const [form, setForm] = useState({ name: '', surname: '', email: '', phone: '' });
-  const [submitted, setSubmitted] = useState(null); 
+  const [submitted, setSubmitted] = useState(null);
   const [result, setResult] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [phoneError, setPhoneError] = useState('');
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    
+    if (name === 'phone') {
+      const cleaned = value.replace(/\s/g, '');
+      if (cleaned && !/^\+?3?8?0\d{9}$/.test(cleaned)) {
+        setPhoneError('Введіть номер у форматі +380XXXXXXXXX');
+      } else {
+        setPhoneError('');
+      }
+    }
+  };
+
+  const validatePhone = (phone) => {
+    const cleaned = phone.replace(/\s/g, '');
+    return /^(\+?380\d{9}|0\d{9})$/.test(cleaned);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,6 +40,7 @@ function RegistrationForm({ onJoin }) {
       { value: form.email,   name: 'Електронна пошта' },
       { value: form.phone,   name: 'Номер телефону' },
     ];
+
     for (let i = 0; i < fields.length; i++) {
       if (fields[i].value.trim() === '') {
         setErrorMsg(`Будь ласка, заповніть поле: "${fields[i].name}"`);
@@ -29,10 +48,19 @@ function RegistrationForm({ onJoin }) {
         return;
       }
     }
+
+    if (!validatePhone(form.phone)) {
+      setPhoneError('Введіть номер у форматі +380XXXXXXXXX');
+      setErrorMsg('Будь ласка, введіть коректний номер телефону');
+      setResult('error');
+      return;
+    }
+
     if (initiativeId && initiative) onJoin(initiativeId, initiative.title);
-    setSubmitted({ ...form }); 
+    setSubmitted({ ...form });
     setResult('success');
     setForm({ name: '', surname: '', email: '', phone: '' });
+    setPhoneError('');
   };
 
   const inputStyle = {
@@ -47,6 +75,14 @@ function RegistrationForm({ onJoin }) {
     boxSizing: 'border-box',
     outline: 'none',
     transition: 'border-color 0.25s, box-shadow 0.25s',
+  };
+
+  const phoneInputStyle = {
+    ...inputStyle,
+    borderColor: phoneError ? '#e53e3e' : (form.phone && !phoneError ? '#38a169' : '#e8e4f0'),
+    boxShadow: phoneError
+      ? '0 0 0 3px rgba(229,62,62,0.1)'
+      : (form.phone && !phoneError ? '0 0 0 3px rgba(56,161,105,0.1)' : 'none'),
   };
 
   const wrapStyle = {
@@ -110,11 +146,32 @@ function RegistrationForm({ onJoin }) {
           </div>
 
           <div className="form-group">
-            <label htmlFor="phone">Номер телефону</label>
+            <label htmlFor="phone">
+              Номер телефону
+              {form.phone && !phoneError && (
+                <span style={{ color: '#38a169', marginLeft: '8px', fontSize: '0.8rem' }}>✓ Коректний</span>
+              )}
+            </label>
             <div style={wrapStyle}>
               <span style={iconStyle}>📱</span>
-              <input style={inputStyle} type="tel" id="phone" name="phone" placeholder="+380 XX XXX XX XX" value={form.phone} onChange={handleChange} />
+              <input
+                style={phoneInputStyle}
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="+380 XX XXX XX XX"
+                value={form.phone}
+                onChange={handleChange}
+              />
             </div>
+            {phoneError && (
+              <p style={{ color: '#e53e3e', fontSize: '0.8rem', margin: '4px 0 0 2px' }}>
+                ⚠️ {phoneError}
+              </p>
+            )}
+            <p style={{ color: '#9ca3af', fontSize: '0.75rem', margin: '4px 0 0 2px' }}>
+              Формат: +380XXXXXXXXX або 0XXXXXXXXX
+            </p>
           </div>
 
           {result === 'error' && <div className="form-error">⚠️ {errorMsg}</div>}
