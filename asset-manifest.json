@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/unity-volunteer-react/static/css/main.2e662a65.css",
-    "main.js": "/unity-volunteer-react/static/js/main.227694ee.js",
+    "main.js": "/unity-volunteer-react/static/js/main.28c7d24e.js",
     "index.html": "/unity-volunteer-react/index.html",
     "main.2e662a65.css.map": "/unity-volunteer-react/static/css/main.2e662a65.css.map",
-    "main.227694ee.js.map": "/unity-volunteer-react/static/js/main.227694ee.js.map"
+    "main.28c7d24e.js.map": "/unity-volunteer-react/static/js/main.28c7d24e.js.map"
   },
   "entrypoints": [
     "static/css/main.2e662a65.css",
-    "static/js/main.227694ee.js"
+    "static/js/main.28c7d24e.js"
   ]
 }
