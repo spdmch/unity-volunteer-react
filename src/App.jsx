@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter } from 'react-router-dom';
+// Ось тут ми додаємо ВСЕ необхідне: BrowserRouter, Routes, Route, Navigate
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from './Context/AuthContext';
 import { db } from './firebase';
 import { useInitiatives } from './hooks/useInitiatives';
 
-import Header            from './components/Header';
-import Footer            from './components/Footer';
-import RegistrationForm  from './components/RegistrationForm';
+import Header             from './components/Header';
+import Footer             from './components/Footer';
+import RegistrationForm   from './components/RegistrationForm';
 
 import AboutPage          from './pages/AboutPage';
 import ProjectsPage       from './pages/ProjectsPage';
@@ -17,8 +18,9 @@ import FormInitiativePage from './pages/FormInitiativePage';
 import NewsPage           from './pages/NewsPage';
 import LoginPage          from './pages/LoginPage';
 import RegisterPage       from './pages/RegisterPage';
-import { collection, doc, setDoc, getDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc } from 'firebase/firestore';
 
+// Захищений маршрут
 function PrivateRoute({ children }) {
   const { currentUser } = useAuth();
   return currentUser ? children : <Navigate to="/login" replace />;
@@ -26,7 +28,6 @@ function PrivateRoute({ children }) {
 
 function AppRoutes() {
   const { currentUser } = useAuth();
-
   const { initiatives: allInitiatives, loading: initiativesLoading } = useInitiatives();
 
   const [joinedIds,       setJoinedIds]       = useState([]);
@@ -59,7 +60,6 @@ function AppRoutes() {
         setDataLoaded(true);
       }
     }
-
     loadUserData();
   }, [currentUser]);
 
@@ -117,10 +117,8 @@ function AppRoutes() {
   return (
     <>
       <Header />
-<BrowserRouter basename="/unity-volunteer-react-main">
       <Routes>
         <Route path="/" element={<AboutPage />} />
-
         <Route
           path="/projects"
           element={
@@ -133,7 +131,6 @@ function AppRoutes() {
             />
           }
         />
-
         <Route
           path="/my-projects"
           element={
@@ -147,7 +144,6 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/favorites"
           element={
@@ -162,7 +158,6 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
-
         <Route
           path="/form-registr"
           element={
@@ -171,26 +166,23 @@ function AppRoutes() {
             </PrivateRoute>
           }
         />
-
         <Route path="/form-initiative" element={<FormInitiativePage />} />
         <Route path="/news"            element={<NewsPage />} />
         <Route path="/login"           element={<LoginPage />} />
         <Route path="/register"        element={<RegisterPage />} />
       </Routes>
-      </BrowserRouter>
       <Footer />
     </>
   );
 }
 
+// Головна функція
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <BrowserRouter basename="/unity-volunteer-react">
-          <AppRoutes />
-        </BrowserRouter>
-      </Router>
+      <BrowserRouter basename="/unity-volunteer-react">
+        <AppRoutes />
+      </BrowserRouter>
     </AuthProvider>
   );
 }
