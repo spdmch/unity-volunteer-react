@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from './Context/AuthContext';
 import { db } from './firebase';
@@ -117,7 +117,7 @@ function AppRoutes() {
   return (
     <>
       <Header />
-<BrowserRouter basename="/unity-volunteer-react">
+<BrowserRouter basename="/unity-volunteer-react-main">
       <Routes>
         <Route path="/" element={<AboutPage />} />
 
@@ -187,7 +187,9 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <AppRoutes />
+        <BrowserRouter basename="/unity-volunteer-react">
+          <AppRoutes />
+        </BrowserRouter>
       </Router>
     </AuthProvider>
   );
