@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/unity-volunteer-react/static/css/main.2e662a65.css",
+    "main.js": "/unity-volunteer-react/static/js/main.d22c7498.js",
+    "index.html": "/unity-volunteer-react/index.html",
+    "main.2e662a65.css.map": "/unity-volunteer-react/static/css/main.2e662a65.css.map",
+    "main.d22c7498.js.map": "/unity-volunteer-react/static/js/main.d22c7498.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2e662a65.css",
+    "static/js/main.d22c7498.js"
+  ]
+}
